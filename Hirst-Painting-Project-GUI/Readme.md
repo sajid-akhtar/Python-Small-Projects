@@ -1,0 +1,1 @@
+Use absolute path in face any error to extract the color
