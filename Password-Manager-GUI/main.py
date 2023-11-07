@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import random
 import pyperclip
+import json
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 
 
@@ -26,6 +27,26 @@ def generate_password_func():
     password_entry.insert(0, password)
     pyperclip.copy(password)
 
+# ---------------------------- FIND PASSWORD ------------------------------- #
+
+
+def find_password():
+    website = website_entry.get()
+
+    try:
+        with open("D:/Python/python/Password-Manager-GUI/data.json") as file1:
+            data = json.load(file1)
+    except FileNotFoundError:
+        messagebox.showerror(title="Error", message="No Data File Found")
+    else:
+        if website in data:
+            email = data[website]["email"]
+            password = data[website]["password"]
+            messagebox.showinfo(
+                title=website, message=f"Email: {email}\nPassword: {password}")
+        else:
+            messagebox.showinfo(
+                title="Error", message=f"No Details for {website} exists.")
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 
@@ -35,18 +56,30 @@ def save():
     email = email_entry.get()
     password = password_entry.get()
 
+    new_data = {
+        website: {
+            "email": email,
+            "password": password
+        }
+    }
+
     if len(password) == 0 or len(website) == 0:
         messagebox.showinfo(
             title="Oops!", message="Please make sure you haven't left any field empty.")
     else:
-        is_ok = messagebox.askokcancel(
-            title=website, message=f"These are the details entered: \nEmail: {email}\n Password: {password} \nIs it okay to save?")
-
-        if is_ok:
-            with open("D:/Python/python/Password-Manager-GUI/data.txt", "a") as file1:
-                file1.write(f"{website} | {email} | {password}\n")
-                website_entry.delete(0, END)
-                password_entry.delete(0, END)
+        try:
+            with open("D:/Python/python/Password-Manager-GUI/data.json", "r") as file1:
+                data = json.load(file1)
+        except FileNotFoundError:
+            with open("D:/Python/python/Password-Manager-GUI/data.json", "w") as file1:
+                json.dump(new_data, file1, indent=4)
+        else:
+            data.update(new_data)
+            with open("D:/Python/python/Password-Manager-GUI/data.json", "w") as file1:
+                json.dump(data, file1, indent=4)
+        finally:
+            website_entry.delete(0, END)
+            password_entry.delete(0, END)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -74,8 +107,8 @@ password_label = Label(text="Password: *")
 password_label.grid(row=3, column=0)
 
 # Entry 1 - Input for website
-website_entry = Entry(width=35)
-website_entry.grid(row=1, column=1, columnspan=2, sticky="EW")
+website_entry = Entry(width=21)
+website_entry.grid(row=1, column=1, sticky="EW")
 website_entry.focus()
 
 # Entry 2 - Input for email
@@ -92,8 +125,13 @@ password_entry.grid(row=3, column=1, sticky="EW")
 generate_password = Button(text="Generate Password",
                            command=generate_password_func)
 generate_password.grid(row=3, column=2, sticky="EW")
+
 # Button 2 - Add
 add = Button(text="Add", width=36, command=save)
 add.grid(row=4, column=1, columnspan=2, sticky="EW")
+
+# Button 3 - Search
+search = Button(text="Search", command=find_password, width=13)
+search.grid(row=1, column=2, sticky="EW")
 
 window.mainloop()
