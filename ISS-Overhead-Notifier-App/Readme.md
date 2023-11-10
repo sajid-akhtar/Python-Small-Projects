@@ -1,18 +1,16 @@
-########################## Simple Email App #####################
+###################################### International Space Station Notifier ##################################
 
-Modules Used:<br/>
-    - smtplib<br/>
-    - pandas<br/>
+Modules Used: <br/>
     - datetime<br/>
-    - random<br/>
-    - sys<br/>
+    - time<br/>
+    - requests<br/>
+    - smtplib<br/>
 
 Description:<br/>
-    - Allows you to send email to a specific person by querying from the csv file<br/>
-    - The email will be send only if the day and month matches with today's date<br/>
-    - In code, allow your relative path where you will be putting all your files accordingly<br/>
+    - Notifies user whenever ISS passes to their location during night via email<br/>
+    - Demonstrates the use of API calls to API endpoints to fetec data<br/>
 
-How to configure your gmail to send email?<br/>
+About SMTPLIB:<br/>
     - Go to https://myaccount.google.com/<br/>
     - Select Security on the left and scroll down to How you sign in to Google<br/>
     - Enable 2-Step Verification<br/>
